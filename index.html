@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Picture Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        select {
+            padding: 8px;
+            margin-right: 10px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #imageContainer {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .country-image {
+            max-width: 300px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Picture Generator</h1>
+
+    <div>
+        <label for="countryDep">Pet's Departure Country:</label>
+        <select id="countryDep">
+            <option value="USA">USA</option>
+            <option value="Taiwan">Taiwan</option>
+            <option value="Japan">Japan</option>
+            <!-- Add more countries as needed -->
+        </select>
+
+        <label for="countryArr">and Country Arrived:</label>
+        <select id="countryArr">
+            <option value="USA">USA</option>
+            <option value="Taiwan">Taiwan</option>
+            <option value="Japan">Japan</option>
+            <!-- Add more countries as needed -->
+        </select>
+
+        <button onclick="generateImages()">Generate Images</button>
+    </div>
+
+    <div id="imageContainer"></div>
+
+    <button onclick="exportCanvas()">Export Canvas</button>
+
+    <script>
+        function generateImages() {
+            const countryDep = document.getElementById('countryDep').value;
+            const countryArr = document.getElementById('countryArr').value;
+
+            const imageContainer = document.getElementById('imageContainer');
+            imageContainer.innerHTML = '';
+
+            // Placeholder image URLs (replace with actual image URLs)
+            const imageUrl1 = 'pictures/country/' + countryDep + '.png';
+            const imageUrl2 = 'pictures/country/' + countryArr + '.png';
+
+            const image1 = document.createElement('img');
+            //imageUrl1.crossOrigin = "anonymous";
+            image1.setAttribute('crossorigin', 'anonymous');
+            image1.src = imageUrl1 + '?not-from-cache-please';
+            image1.alt = `${countryArr} image`;
+            image1.className = 'country-image';
+
+            const image2 = document.createElement('img');
+            image2.setAttribute('crossorigin', 'anonymous');
+            //imageUrl2.crossOrigin = "anonymous";
+            image2.src = imageUrl2 + '?not-from-cache-please';
+            image2.alt = `${countryArr} image`;
+            image2.className = 'country-image';
+
+            imageContainer.appendChild(image1);
+            imageContainer.appendChild(image2);
+        }
+
+        function exportCanvas() {
+            const imageContainer = document.getElementById('imageContainer');
+            const tempCanvas = document.createElement('canvas');
+            const ctx = tempCanvas.getContext('2d');
+
+            // Set canvas dimensions based on the images
+            tempCanvas.width = imageContainer.offsetWidth;
+            tempCanvas.height = imageContainer.offsetHeight;
+
+            // Draw images onto the canvas
+            const images = document.getElementsByClassName('country-image');
+            let yOffset = 0;
+
+            Array.from(images).forEach(image => {
+                ctx.drawImage(image, 0, yOffset);
+                yOffset += image.offsetHeight;
+            });
+
+            // Create a download link for the canvas
+            const link = document.createElement('a');
+            link.download = 'generated_image.png';
+            link.href = tempCanvas.toDataURL();
+
+            // Simulate a click on the link
+            document.body.appendChild(link);
+            link.click();
+
+            // Remove the link from the document
+            document.body.removeChild(link);
+        }
+    </script>
+
+</body>
+</html>
